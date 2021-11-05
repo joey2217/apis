@@ -12,14 +12,9 @@ export default function handler(
       ip = data[0]
     }
   }
-  res
-    .status(200)
-    .send(
-      'ip:' +
-        ip +
-        +'x-forwarded-for:' +
-        req.headers['x-forwarded-for'] +
-        'remoteAddress:' +
-        req.socket.remoteAddress
-    )
+  const forwarded = req.headers['x-forwarded-for']
+  if (forwarded) {
+    ip = typeof forwarded === 'string' ? forwarded : forwarded.join()
+  }
+  res.status(200).send(ip)
 }
